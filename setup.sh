@@ -128,7 +128,11 @@ if has-release "$tag"; then
     exit 1
   fi
   msg "Extracing '$archive'"
-  tar -xf "$archive" --strip-components 1
+  tar=bsdtar
+  if ! command -v "$tar" >/dev/null 2>&1; then
+    tar=tar
+  fi
+  "$tar" -xf "$archive" --strip-components 1
 else
   err "Could not find any release named '$tag'. The provided branch ($branch) might not be tracked by nightlies, or is being updated."
   exit 1
