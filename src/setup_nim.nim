@@ -37,7 +37,7 @@ proc main(): Future[void] {.async.} =
   try:
     let path = getInput("path")
     group "Download the compiler":
-      let exitCode = await exec('"' & replace($(getAppDir() / "setup.sh"), "\"", "\\\"") & '"', "-o", path, getInput("version", InputOptions(required: true)))
+      let exitCode = await exec("bash", "--", getAppDir() / "setup.sh", "-o", path, getInput("version", InputOptions(required: true)))
       if exitCode != 0:
         error "Download failed"
         return
