@@ -1,0 +1,27 @@
+{
+  "name": "setup-nim",
+  "version": "0.2.0",
+  "description": "GitHub Actions to setup a Nim environment",
+  "main": "index.js",
+  "scripts": {
+    "build": "nimble build",
+    "prepare": "npm run build && ncc build index.js -o dist --source-map --license license.txt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alaviss/setup-nim.git"
+  },
+  "author": "",
+  "license": "GPL-3.0+",
+  "bugs": {
+    "url": "https://github.com/alaviss/setup-nim/issues"
+  },
+  "homepage": "https://github.com/alaviss/setup-nim#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/exec": "^1.0.4"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.24.0"
+  }
+}
