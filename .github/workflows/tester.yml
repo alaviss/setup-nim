@@ -50,7 +50,7 @@ jobs:
       - name: Verify installation in correct folder
         shell: bash
         run: |
-          directory=${{ matrix.customDir }}
+          directory='${{ matrix.customDir }}'
           [[ -z "$directory" ]] && directory=nim
           "$directory/bin/nim" -v
 
