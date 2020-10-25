@@ -7,11 +7,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        version: ['version-1-0', 'version-1-4', 'devel']
         os: ['windows-latest', 'ubuntu-latest', 'macos-latest']
         customDir: ['', 'install-nim-here', 'dir with spaces']
         addPath: [true, false]
 
-    name: '${{ matrix.os }}(path: ${{ matrix.customDir }}, add-to-path: ${{ matrix.addPath }})'
+    name: '${{ matrix.os }}(path: ${{ matrix.customDir }}, add-to-path: ${{ matrix.addPath }}, version: ${{ matrix.version }})'
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -23,6 +24,7 @@ jobs:
         uses: ./
         with:
           add-to-path: ${{ matrix.addPath }}
+          version: ${{ matrix.version }}
 
       - if: matrix.customDir != ''
         name: Install Nim (custom subdir)
@@ -30,6 +32,7 @@ jobs:
         with:
           path: ${{ matrix.customDir }}
           add-to-path: ${{ matrix.addPath }}
+          version: ${{ matrix.version }}
 
       - if: matrix.addPath
         name: Verify installation in PATH
@@ -47,12 +50,27 @@ jobs:
             exit 1
           fi
 
-      - name: Verify installation in correct folder
+      - name: Verify installation version and whether it is in the correct folder
         shell: bash
         run: |
           directory='${{ matrix.customDir }}'
           [[ -z "$directory" ]] && directory=nim
-          "$directory/bin/nim" -v
+          if [[ -x "$directory/bin/nim" ]]; then
+            echo "Nim is installed in the correct directory!"
+          else
+            echo "Error: Could not find the compiler."
+          fi
+          requestedVersion='${{ matrix.version }}'
+          if [[ "$requestedVersion" == version-* ]]; then
+            version=$(echo 'echo NimVersion; quit 0' | nim secret --hints:off)
+            versionPrefix=${requestedVersion#version-}
+            versionPrefix=${requestedVersion/-/.}
+            if [[ $version == $requestedVersion* ]]; then
+              echo "The correct version was fetched"
+            else
+              echo "Error: Expected version prefix '$versionPrefix', but version '$version' was installed"
+            fi
+          fi
 
       - name: Check if the compiler works
         shell: bash
