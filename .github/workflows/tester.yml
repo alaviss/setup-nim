@@ -38,7 +38,13 @@ jobs:
       - if: '! matrix.addPath'
         name: Verify installation not in PATH
         shell: bash
-        run: ! which nim
+        run: |
+          if ! which nim >/dev/null 2>&1; then
+            echo "Test passed!"
+          else
+            echo "Test failed!"
+            exit 1
+          fi
 
       - name: Verify installation in correct folder
         shell: bash
