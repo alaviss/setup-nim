@@ -71,7 +71,8 @@ jobs:
             "$directory/bin/nim" c test.nim
           fi
 
-      - name: Check if nimble works
+      - if: matrix.addPath
+        name: Check if nimble works
         shell: bash
         run: |
           nimble develop -y karax nimterop choosenim
