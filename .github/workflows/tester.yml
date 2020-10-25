@@ -51,18 +51,18 @@ jobs:
         shell: bash
         run: |
           cat << EOF > test.nim
-        import strutils
-        import sequtils
-        import tables
-        EOF
+          import strutils
+          import sequtils
+          import tables
+          EOF
 
-        if ${{ matrix.addPath }}; then
-          nim c test.nim
-        else
-          directory=${{ matrix.customDir }}
-          [[ -z "$directory" ]] && directory=nim
-          "$directory/bin/nim" c test.nim
-        fi
+          if ${{ matrix.addPath }}; then
+            nim c test.nim
+          else
+            directory=${{ matrix.customDir }}
+            [[ -z "$directory" ]] && directory=nim
+            "$directory/bin/nim" c test.nim
+          fi
 
       - name: Check if nimble works
         shell: bash
