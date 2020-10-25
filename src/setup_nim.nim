@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import asyncjs, jsffi, strutils
+import asyncjs, jsffi
 import private/actions/[core, exec]
 import private/path
 
