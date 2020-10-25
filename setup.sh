@@ -43,7 +43,7 @@ EOF
 get-archive-name() {
   local ext=.tar.xz
   local os; os=$(uname)
-  os=${os,,}
+  os=$(tr '[:upper:]' '[:lower:]' <<< "$os")
   case "$os" in
     'darwin')
       os=macosx
