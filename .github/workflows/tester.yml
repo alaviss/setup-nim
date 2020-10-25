@@ -75,4 +75,5 @@ jobs:
         name: Check if nimble works
         shell: bash
         run: |
-          nimble install -y karax nimterop choosenim
+          nimble install -y karax nimterop
+          toast -h >/dev/null 2>&1

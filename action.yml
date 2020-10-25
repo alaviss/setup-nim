@@ -30,12 +30,17 @@ runs:
     - name: 'Add the Nim compiler to PATH'
       shell: bash
       run: |
+        add-path() {
+          echo "$1" >> "$GITHUB_PATH"
+          echo "Directory '$path' has been added to PATH."
+        }
+
         if ${{ inputs.add-to-path }}; then
           path='${{ inputs.path }}'
           path=$(python -c "import os; import sys; print(os.path.realpath(sys.argv[1]))" "$path")
           path=$path/bin
-          echo "$path" >> "$GITHUB_PATH"
-          echo "Directory '$path' has been added to PATH."
+          add-path "$path"
+          add-path "$HOME/.nimble"
         else
           echo "This step was skipped per user request."
         fi
