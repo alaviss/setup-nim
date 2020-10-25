@@ -82,7 +82,10 @@ jobs:
 
           "$nim" c test.nim || true
 
-      - if: matrix.addPath
+      # Until https://github.com/nim-lang/nimble/issues/866 is fixed
+      # this test will have to be disabled for nim installed in a path
+      # containing whitespaces.
+      - if: matrix.addPath && ! contains(matrix.customDir, ' ')
         name: Check if nimble works
         shell: bash
         run: |
