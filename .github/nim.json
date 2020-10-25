@@ -4,7 +4,7 @@
       "owner": "nim",
       "pattern": [
         {
-          "regexp": "^(.+)\\(\\d+,\\s\\d+\\)\\s(Error|Warning|Hint):\\s(.+)\\s\\[.+\\]$",
+          "regexp": "^(.+)\\((\\d+),\\s(\\d+)\\)\\s(Error|Warning|Hint):\\s(.+)\\s\\[.+\\]$",
           "file": 1,
           "line": 2,
           "column": 3,
