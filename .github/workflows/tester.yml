@@ -11,7 +11,7 @@ jobs:
         customDir: ['', 'install-nim-here', 'dir with spaces']
         addPath: [true, false]
 
-    name: ${{ matrix.os }}
+    name: '${{ matrix.os }}(path: ${{ matrix.customDir }}, add-to-path: ${{ matrix.addPath }})'
     runs-on: ${{ matrix.os }}
 
     steps:
