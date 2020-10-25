@@ -72,6 +72,15 @@ jobs:
           # Disable warnings to not trigger annotations
           "$nim" c --warnings:off test.nim
 
+          # TODO: figure out how to automate the check instead of
+          # verifying by hand.
+          cat << EOF > test.nim
+          {.warning: "Trigger annotations".}
+          {.error: "This is not an error, but a test for annotations".}
+          EOF
+
+          "$nim" c test.nim || true
+
       - if: matrix.addPath
         name: Check if nimble works
         shell: bash
