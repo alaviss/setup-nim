@@ -48,7 +48,7 @@ jobs:
 
       - name: Verify installation in correct folder
         shell: bash
-        run:
+        run: |
           directory=${{ matrix.customDir }}
           [[ -z "$directory" ]] && directory=nim
           "$directory/bin/nim" -v
