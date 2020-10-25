@@ -48,7 +48,7 @@ get-archive-name() {
     'darwin')
       os=macosx
       ;;
-    'windows_nt'|mingw_nt*)
+    'windows_nt'|mingw*)
       os=windows
       ext=.zip
       ;;
