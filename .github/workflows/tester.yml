@@ -20,13 +20,13 @@ jobs:
 
       - if: matrix.customDir == ''
         name: Install Nim (default subdir)
-        uses: .
+        uses: ./
         with:
           add-to-path: ${{ matrix.addPath }}
 
       - if: matrix.customDir != ''
         name: Install Nim (custom subdir)
-        uses: .
+        uses: ./
         with:
           path: ${{ matrix.customDir }}
 
