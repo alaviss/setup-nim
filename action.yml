@@ -20,7 +20,8 @@ runs:
   steps:
     - name: 'Download the Nim compiler'
       shell: bash
-      run: '${{ github.action_path }}/setup.sh' -o '${{ inputs.path }}' '${{ inputs.version }}'
+      run: |
+        '${{ github.action_path }}/setup.sh' -o '${{ inputs.path }}' '${{ inputs.version }}'
 
     - name: 'Enable annotations support'
       shell: bash
