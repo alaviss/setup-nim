@@ -17,6 +17,7 @@ if (typeof Uint16Array === 'undefined') Uint16Array = Array;
 if (typeof Uint32Array === 'undefined') Uint32Array = Array;
 if (typeof Float32Array === 'undefined') Float32Array = Array;
 if (typeof Float64Array === 'undefined') Float64Array = Array;
+var NTI1194657 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
 var NTI1194653 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
 var NTI1194633 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
 var NTI1194637 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
@@ -54,6 +55,9 @@ NTI1194637.base = NTI1194633;
 var NNI1194653 = {kind: 2, len: 0, offset: 0, typ: null, name: null, sons: []};
 NTI1194653.node = NNI1194653;
 NTI1194653.base = NTI1194619;
+var NNI1194657 = {kind: 2, len: 0, offset: 0, typ: null, name: null, sons: []};
+NTI1194657.node = NNI1194657;
+NTI1194657.base = NTI1194619;
 function makeNimstrLit(c_1455062) {
       var ln = c_1455062.length;
   var result = new Array(ln);
@@ -374,6 +378,24 @@ function mnewString(len_1460044) {
 
   
 }
+function reraiseException() {
+    if ((lastJSError == null)) {
+    raiseException({message: makeNimstrLit("no exception to reraise"), parent: null, m_type: NTI1194657, name: null, trace: [], up: null}, "ReraiseDefect");
+    }
+    else {
+      if ((excHandler == 0)) {
+      if (isNimException_1375704()) {
+      unhandledException(lastJSError);
+      }
+      
+      }
+      
+      throw lastJSError;
+    }
+    
+
+  
+}
 var globalRaiseHook_1357018 = [null];
 var localRaiseHook_1357023 = [null];
 var outOfMemHook_1357026 = [null];
@@ -512,19 +534,19 @@ function nsuFindChar(s_10385216, sub_10385217, start_10385218, last_10385219) {
     var last_10385223 = Tmp1;
     L2: do {
       var i_10385606 = 0;
-      var colontmp__11270248 = 0;
-      colontmp__11270248 = start_10385218;
-      var res_11270249 = colontmp__11270248;
+      var colontmp__11240246 = 0;
+      colontmp__11240246 = start_10385218;
+      var res_11240247 = colontmp__11240246;
       L3: do {
           L4: while (true) {
-          if (!(res_11270249 <= last_10385223)) break L4;
-            i_10385606 = res_11270249;
+          if (!(res_11240247 <= last_10385223)) break L4;
+            i_10385606 = res_11240247;
             if ((sub_10385217 == s_10385216[chckIndx(i_10385606, 0, (s_10385216).length-1)])) {
             result_10385221 = i_10385606;
             break BeforeRet;
             }
             
-            res_11270249 = addInt(res_11270249, 1);
+            res_11240247 = addInt(res_11240247, 1);
           }
       } while(false);
     } while(false);
@@ -548,15 +570,15 @@ function substr_1571022(s_1571024, first_1571025, last_1571026) {
     result_1571027 = nimCopy(null, mnewString(chckRange(L_1571030, 0, 2147483647)), NTI1188013);
     L1: do {
       var i_1571039 = 0;
-      var colontmp__11270257 = 0;
-      colontmp__11270257 = subInt(L_1571030, 1);
-      var res_11270258 = 0;
+      var colontmp__11240255 = 0;
+      colontmp__11240255 = subInt(L_1571030, 1);
+      var res_11240256 = 0;
       L2: do {
           L3: while (true) {
-          if (!(res_11270258 <= colontmp__11270257)) break L3;
-            i_1571039 = res_11270258;
+          if (!(res_11240256 <= colontmp__11240255)) break L3;
+            i_1571039 = res_11240256;
             result_1571027[chckIndx(i_1571039, 0, (result_1571027).length-1)] = s_1571024[chckIndx(addInt(i_1571039, first_1571028), 0, (s_1571024).length-1)];
-            res_11270258 = addInt(res_11270258, 1);
+            res_11240256 = addInt(res_11240256, 1);
           }
       } while(false);
     } while(false);
@@ -591,15 +613,15 @@ function nsuInitSkipTable(a_10380081, sub_10380082) {
     } while(false);
     L3: do {
       var i_10380101 = 0;
-      var colontmp__11270265 = 0;
-      colontmp__11270265 = subInt(m_10380083, 1);
-      var i_11270266 = 0;
+      var colontmp__11240263 = 0;
+      colontmp__11240263 = subInt(m_10380083, 1);
+      var i_11240264 = 0;
       L4: do {
           L5: while (true) {
-          if (!(i_11270266 < colontmp__11270265)) break L5;
-            i_10380101 = i_11270266;
+          if (!(i_11240264 < colontmp__11240263)) break L5;
+            i_10380101 = i_11240264;
             a_10380081[chckIndx(sub_10380082[chckIndx(i_10380101, 0, (sub_10380082).length-1)], 0, (a_10380081).length-1)] = subInt(subInt(m_10380083, 1), i_10380101);
-            i_11270266 = addInt(i_11270266, 1);
+            i_11240264 = addInt(i_11240264, 1);
           }
       } while(false);
     } while(false);
@@ -705,11 +727,6 @@ function nsuReplaceStr(s_10455016, sub_10455017, by_10455018) {
   return result_10455019;
 
 }
-function addMatcher_10985151(file_10985153) {
-    console.log((("::add-matcher::" + file_10985153)));
-
-  
-}
 function HEX2F_11006099(a_11006101, b_11006102) {
   var result_11006103 = null;
 
@@ -717,6 +734,16 @@ function HEX2F_11006099(a_11006101, b_11006102) {
 
   return result_11006103;
 
+}
+function addMatcher_10985151(file_10985153) {
+    console.log((("::add-matcher::" + file_10985153)));
+
+  
+}
+function isNimException_1375704() {
+    return lastJSError && lastJSError.m_type;
+
+  
 }
 async function main_11040001() {
     var Tmp2;
@@ -733,8 +760,8 @@ async function main_11040001() {
     Tmp4 = framePtr;
     try {
     module_10981100.startGroup(toJSStr(nHEX60gensym5_11050001));
-    var exitCode_11100012 = (await module_11001031.exec(toJSStr([34].concat(nsuReplaceStr(cstrToNimstr((__webpack_require__.ab + "setup.sh")), makeNimstrLit("\""), makeNimstrLit("\\\"")) || [])), ["-o", path_11045001, module_10981100.getInput("version", {required: true})]));
-    if (!((exitCode_11100012 == 0))) {
+    var exitCode_11070012 = (await module_11001031.exec(toJSStr([34].concat(nsuReplaceStr(cstrToNimstr(HEX2F_11006099(__dirname, "exsetup.sh")), makeNimstrLit("\""), makeNimstrLit("\\\"")) || [],[34])), ["-o", path_11045001, module_10981100.getInput("version", {required: true})]));
+    if (!((exitCode_11070012 == 0))) {
     module_10981100.error("Download failed");
     result_11040007 = undefined;
     break BeforeRet;
@@ -748,12 +775,12 @@ async function main_11040001() {
     addMatcher_10985151((__webpack_require__.ab + "nim.json"));
     if ((module_10981100.getInput("add-to-path") == "true")) {
     module_10981100.info("Adding compiler to PATH");
-    var rpath_11190011 = (fs_11036015.realpathSync((path_11045001)));
-    var pHEX60gensym32_11195001 = HEX2F_11006099(rpath_11190011, "bin");
-    module_10981100.info((("Adding '" + pHEX60gensym32_11195001) + "' to PATH"));
-    module_10981100.addPath(HEX2F_11006099(rpath_11190011, "bin"));
-    var pHEX60gensym43_11255001 = (path_11006028.join(((os_11036016.homedir())), (".nimble"), ("bin")));
-    module_10981100.info((("Adding '" + pHEX60gensym43_11255001) + "' to PATH"));
+    var rpath_11160011 = (fs_11036015.realpathSync((path_11045001)));
+    var pHEX60gensym27_11165001 = HEX2F_11006099(rpath_11160011, "bin");
+    module_10981100.info((("Adding '" + pHEX60gensym27_11165001) + "' to PATH"));
+    module_10981100.addPath(HEX2F_11006099(rpath_11160011, "bin"));
+    var pHEX60gensym38_11225001 = (path_11006028.join(((os_11036016.homedir())), (".nimble"), ("bin")));
+    module_10981100.info((("Adding '" + pHEX60gensym38_11225001) + "' to PATH"));
     module_10981100.addPath((path_11006028.join(((os_11036016.homedir())), (".nimble"), ("bin"))));
     }
     
@@ -763,7 +790,8 @@ async function main_11040001() {
  lastJSError = EXC;
  --excHandler;
     framePtr = Tmp2;
-    module_10981100.error("Failed!");
+    module_10981100.setFailed("Failed!");
+    reraiseException();
     lastJSError = prevJSError;
     } finally {
     framePtr = Tmp2;
