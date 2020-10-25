@@ -29,6 +29,7 @@ jobs:
         uses: ./
         with:
           path: ${{ matrix.customDir }}
+          add-to-path: ${{ matrix.addPath }}
 
       - if: matrix.addPath
         name: Verify installation in PATH
