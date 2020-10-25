@@ -128,11 +128,22 @@ if has-release "$tag"; then
     exit 1
   fi
   msg "Extracing '$archive'"
-  tar=bsdtar
-  if ! command -v "$tar" >/dev/null 2>&1; then
-    tar=tar
+  if [[ $archive == *.zip ]]; then
+    # Create a temporary directory
+    tmpdir=$(mktemp -d)
+    # extract archive to temporary dir
+    7z x "$archive" "-o$tmpdir"
+    # collect the extracted file names
+    extracted=( "$tmpdir"/* )
+    # use the first name collected, which should be the nim-<version> folder.
+    # This allows us to strip the first component of the path.
+    mv "${extracted[0]}/*" .
+    # remove the temporary dir afterwards
+    rm -rf "$tmpdir"
+    unset tmpdir
+  else
+    "$tar" -xf "$archive" --strip-components 1
   fi
-  "$tar" -xf "$archive" --strip-components 1
 else
   err "Could not find any release named '$tag'. The provided branch ($branch) might not be tracked by nightlies, or is being updated."
   exit 1
