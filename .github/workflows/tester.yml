@@ -70,7 +70,7 @@ jobs:
           fi
 
           # Disable warnings to not trigger annotations
-          "$nim" c --warning:off test.nim
+          "$nim" c --warnings:off test.nim
 
       - if: matrix.addPath
         name: Check if nimble works
