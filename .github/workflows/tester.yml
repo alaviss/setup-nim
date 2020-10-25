@@ -66,6 +66,7 @@ jobs:
           nim=nim
           if ! ${{ matrix.addPath }}; then
             directory='${{ matrix.customDir }}'
+            [[ -z "$directory" ]] && directory=nim
             nim="$directory/bin/nim"
           fi
 
