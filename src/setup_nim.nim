@@ -34,19 +34,22 @@ template addPath(path: cstring) =
   core.addPath path
 
 proc main(): Future[void] {.async.} =
-  let path = getInput("path")
-  group "Download the compiler":
-    let exitCode = await exec('"' & replace($getAppDir().join "setup.sh", "\"", "\""), "-o", path, getInput("version", InputOptions(required: true)))
-    if exitCode != 0:
-      error "Download failed"
-      return
-  info "Adding annotations"
-  addMatcher join(getAppDir(), ".github", "nim.json")
-  if getInput("add-to-path") == "true":
-    info "Adding compiler to PATH"
-    let rpath = fs.realpathSync(path).to(cstring)
-    addPath rpath / "bin"
-    addPath os.homedir().to(cstring).join(".nimble", "bin")
+  try:
+    let path = getInput("path")
+    group "Download the compiler":
+      let exitCode = await exec('"' & replace($(getAppDir().join "setup.sh"), "\"", "\""), "-o", path, getInput("version", InputOptions(required: true)))
+      if exitCode != 0:
+        error "Download failed"
+        return
+    info "Adding annotations"
+    addMatcher join(getAppDir(), ".github", "nim.json")
+    if getInput("add-to-path") == "true":
+      info "Adding compiler to PATH"
+      let rpath = fs.realpathSync(path).to(cstring)
+      addPath rpath / "bin"
+      addPath os.homedir().to(cstring).join(".nimble", "bin")
+  except:
+    error "Failed!"
 
 when isMainModule:
   discard main()

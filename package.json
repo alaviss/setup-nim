@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "nimble build",
-    "prepare": "npm run build && ncc build index.js -o dist --source-map --license license.txt"
+    "prepare": "npm run build -- -d:release && ncc build index.js -o dist --source-map --license license.txt"
   },
   "repository": {
     "type": "git",
