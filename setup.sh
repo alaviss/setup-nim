@@ -137,12 +137,12 @@ if has-release "$tag"; then
     extracted=( "$tmpdir"/* )
     # use the first name collected, which should be the nim-<version> folder.
     # This allows us to strip the first component of the path.
-    mv "${extracted[0]}/*" .
+    mv "${extracted[0]}/"* .
     # remove the temporary dir afterwards
     rm -rf "$tmpdir"
     unset tmpdir
   else
-    "$tar" -xf "$archive" --strip-components 1
+    tar -xf "$archive" --strip-components 1
   fi
 else
   err "Could not find any release named '$tag'. The provided branch ($branch) might not be tracked by nightlies, or is being updated."
