@@ -123,7 +123,7 @@ tag=latest-$branch
 if has-release "$tag"; then
   archive=$(get-archive-name)
   msg "Downloading prebuilt archive '$archive' for branch '$branch'"
-  if ! curl -f -LO "$_download_url/$tag/$(get-archive-name)"; then
+  if ! curl -f -LO "$_download_url/$tag/$archive"; then
     err "Archive '$archive' could not be found and/or downloaded. Maybe your OS/architecture does not have any prebuilt available?"
     exit 1
   fi
