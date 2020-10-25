@@ -733,7 +733,7 @@ async function main_11040001() {
     Tmp4 = framePtr;
     try {
     module_10981100.startGroup(toJSStr(nHEX60gensym5_11050001));
-    var exitCode_11100012 = (await module_11001031.exec(toJSStr([34].concat(nsuReplaceStr(cstrToNimstr((__webpack_require__.ab + "setup.sh")), makeNimstrLit("\""), makeNimstrLit("\"")) || [])), ["-o", path_11045001, module_10981100.getInput("version", {required: true})]));
+    var exitCode_11100012 = (await module_11001031.exec(toJSStr([34].concat(nsuReplaceStr(cstrToNimstr((__webpack_require__.ab + "setup.sh")), makeNimstrLit("\""), makeNimstrLit("\\\"")) || [])), ["-o", path_11045001, module_10981100.getInput("version", {required: true})]));
     if (!((exitCode_11100012 == 0))) {
     module_10981100.error("Download failed");
     result_11040007 = undefined;
