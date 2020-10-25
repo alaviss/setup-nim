@@ -27,12 +27,15 @@ runs:
       run: echo '::add-matcher::${{ github.action_path }}/.github/nim.json'
 
     - name: 'Add the Nim compiler to PATH'
-      if: inputs.add-to-path
       shell: bash
       run: |
-        path=${{ inputs.path }}
-        path=$(python -c "import os; import sys; print(os.path.realpath(sys.argv[1]))" "$path")
-        echo "$path" >> "$GITHUB_PATH"
+        if ${{ inputs.add-to-path }}; then
+          path=${{ inputs.path }}
+          path=$(python -c "import os; import sys; print(os.path.realpath(sys.argv[1]))" "$path")
+          echo "$path" >> "$GITHUB_PATH"
+        else
+          echo "This step was skipped per user request."
+        fi
 
 branding:
   icon: 'download-cloud'
