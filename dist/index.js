@@ -3083,7 +3083,7 @@ framePtr = F;
 framePtr = F.prev;
 var F={procname:"module core",prev:framePtr,filename:"/home/leorize/source/setup-nim-env/src/private/actions/core.nim",line:0};
 framePtr = F;
-F.line = 15;
+F.line = 37;
 var module_10981100 = (__webpack_require__(186));
 framePtr = F.prev;
 var F={procname:"module core",prev:framePtr,filename:"/home/leorize/source/setup-nim-env/src/private/actions/core.nim",line:0};
@@ -3103,7 +3103,7 @@ framePtr = F;
 framePtr = F.prev;
 var F={procname:"module exec",prev:framePtr,filename:"/home/leorize/source/setup-nim-env/src/private/actions/exec.nim",line:0};
 framePtr = F;
-F.line = 5;
+F.line = 27;
 var module_11001031 = (__webpack_require__(514));
 framePtr = F.prev;
 var F={procname:"module exec",prev:framePtr,filename:"/home/leorize/source/setup-nim-env/src/private/actions/exec.nim",line:0};
@@ -3120,7 +3120,7 @@ framePtr = F;
 framePtr = F.prev;
 var F={procname:"module path",prev:framePtr,filename:"/home/leorize/source/setup-nim-env/src/private/path.nim",line:0};
 framePtr = F;
-F.line = 3;
+F.line = 11;
 var path_11006028 = __webpack_require__(622);
 framePtr = F.prev;
 var F={procname:"module path",prev:framePtr,filename:"/home/leorize/source/setup-nim-env/src/private/path.nim",line:0};
@@ -3137,9 +3137,9 @@ framePtr = F;
 framePtr = F.prev;
 var F={procname:"module setup_nim",prev:framePtr,filename:"/home/leorize/source/setup-nim-env/src/setup_nim.nim",line:0};
 framePtr = F;
-F.line = 7;
+F.line = 24;
 var fs_11036015 = __webpack_require__(747);
-F.line = 8;
+F.line = 25;
 var os_11036016 = __webpack_require__(87);
 framePtr = F.prev;
 var F={procname:"module setup_nim",prev:framePtr,filename:"/home/leorize/source/setup-nim-env/src/setup_nim.nim",line:0};
@@ -3649,24 +3649,36 @@ function addMatcher_10985151(file_10985153) {
 
   
 }
+function HEX2F_11006099(a_11006101, b_11006102) {
+  var result_11006103 = null;
+
+  var F={procname:"path./",prev:framePtr,filename:"/home/leorize/source/setup-nim-env/src/private/path.nim",line:0};
+  framePtr = F;
+    F.line = 21;
+    result_11006103 = (path_11006028.join((a_11006101), (b_11006102)));
+  framePtr = F.prev;
+
+  return result_11006103;
+
+}
 async function main_11040001() {
   var result_11040007 = null;
 
   var F={procname:"setup_nim.main",prev:framePtr,filename:"/home/leorize/source/setup-nim-env/src/setup_nim.nim",line:0};
   framePtr = F;
   BeforeRet: do {
-    F.line = 20;
-    var path_11060011 = (fs_11036015.realpathSync((module_10981100.getInput("path"))));
-    F.line = 34;
-    var nHEX60gensym8_11065001 = makeNimstrLit("Download the compiler");
-    F.line = 21;
+    F.line = 37;
+    var path_11045001 = module_10981100.getInput("path");
+    F.line = 56;
+    var nHEX60gensym5_11050001 = makeNimstrLit("Download the compiler");
+    F.line = 38;
     try {
-    F.line = 36;
-    module_10981100.startGroup(toJSStr(nHEX60gensym8_11065001));
-    F.line = 22;
-    var exitCode_11115012 = (await module_11001031.exec(toJSStr([34].concat(nsuReplaceStr(cstrToNimstr((__webpack_require__.ab + "setup.sh")), makeNimstrLit("\""), makeNimstrLit("\"")) || [])), ["-o", path_11060011, module_10981100.getInput("version", {required: true})]));
-    if (!((exitCode_11115012 == 0))) {
-    F.line = 24;
+    F.line = 58;
+    module_10981100.startGroup(toJSStr(nHEX60gensym5_11050001));
+    F.line = 39;
+    var exitCode_11100012 = (await module_11001031.exec(toJSStr([34].concat(nsuReplaceStr(cstrToNimstr((__webpack_require__.ab + "setup.sh")), makeNimstrLit("\""), makeNimstrLit("\"")) || [])), ["-o", path_11045001, module_10981100.getInput("version", {required: true})]));
+    if (!((exitCode_11100012 == 0))) {
+    F.line = 41;
     module_10981100.error("Download failed");
     F.line = 79;
     result_11040007 = undefined;
@@ -3675,27 +3687,29 @@ async function main_11040001() {
     
     } finally {
     framePtr = F;
-    F.line = 39;
-    module_10981100.endGroup(toJSStr(nHEX60gensym8_11065001));
+    F.line = 61;
+    module_10981100.endGroup(toJSStr(nHEX60gensym5_11050001));
     }
-    F.line = 26;
+    F.line = 43;
     module_10981100.info("Adding annotations");
-    F.line = 27;
+    F.line = 44;
     addMatcher_10985151((__webpack_require__.ab + "nim.json"));
     if ((module_10981100.getInput("add-to-path") == "true")) {
-    F.line = 29;
+    F.line = 46;
     module_10981100.info("Adding compiler to PATH");
-    F.line = 15;
-    var pHEX60gensym32_11195001 = path_11060011;
-    F.line = 16;
+    F.line = 47;
+    var rpath_11190011 = (fs_11036015.realpathSync((path_11045001)));
+    F.line = 32;
+    var pHEX60gensym32_11195001 = HEX2F_11006099(rpath_11190011, "bin");
+    F.line = 33;
     module_10981100.info((("Adding '" + pHEX60gensym32_11195001) + "' to PATH"));
-    F.line = 17;
-    module_10981100.addPath(path_11060011);
-    F.line = 15;
+    F.line = 34;
+    module_10981100.addPath(HEX2F_11006099(rpath_11190011, "bin"));
+    F.line = 32;
     var pHEX60gensym43_11255001 = (path_11006028.join(((os_11036016.homedir())), (".nimble"), ("bin")));
-    F.line = 16;
+    F.line = 33;
     module_10981100.info((("Adding '" + pHEX60gensym43_11255001) + "' to PATH"));
-    F.line = 17;
+    F.line = 34;
     module_10981100.addPath((path_11006028.join(((os_11036016.homedir())), (".nimble"), ("bin"))));
     }
     
@@ -3710,7 +3724,7 @@ async function main_11040001() {
 }
 var F={procname:"module setup_nim",prev:framePtr,filename:"/home/leorize/source/setup-nim-env/src/setup_nim.nim",line:0};
 framePtr = F;
-F.line = 34;
+F.line = 52;
 main_11040001();
 framePtr = F.prev;
 var F={procname:"module setup_nim",prev:framePtr,filename:"/home/leorize/source/setup-nim-env/src/setup_nim.nim",line:0};

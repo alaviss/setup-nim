@@ -34,7 +34,7 @@ template addPath(path: cstring) =
   core.addPath path
 
 proc main(): Future[void] {.async.} =
-  let path = fs.realpathSync(getInput("path")).to(cstring)
+  let path = getInput("path")
   group "Download the compiler":
     let exitCode = await exec('"' & replace($getAppDir().join "setup.sh", "\"", "\""), "-o", path, getInput("version", InputOptions(required: true)))
     if exitCode != 0:
@@ -44,7 +44,8 @@ proc main(): Future[void] {.async.} =
   addMatcher join(getAppDir(), ".github", "nim.json")
   if getInput("add-to-path") == "true":
     info "Adding compiler to PATH"
-    addPath path
+    let rpath = fs.realpathSync(path).to(cstring)
+    addPath rpath / "bin"
     addPath os.homedir().to(cstring).join(".nimble", "bin")
 
 when isMainModule:
