@@ -71,11 +71,12 @@ jobs:
 
           # Disable warnings to not trigger annotations
           "$nim" c --warning:off test.nim
+
       - if: matrix.addPath
         name: Check if nimble works
         shell: bash
         run: |
-          nimble install -y karax nimterop
+          nimble install -y nimterop
           if ! command -v toast >/dev/null 2>&1; then
-            echo "Error: could not found toast"
+            echo "Error: could not find toast"
           fi
