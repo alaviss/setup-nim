@@ -55,14 +55,15 @@ jobs:
         run: |
           directory='${{ matrix.customDir }}'
           [[ -z "$directory" ]] && directory=nim
-          if [[ -x "$directory/bin/nim" ]]; then
+          nim=$directory/bin/nim
+          if [[ -x "$nim" ]]; then
             echo "Nim is installed in the correct directory!"
           else
             echo "Error: Could not find the compiler."
           fi
           requestedVersion='${{ matrix.version }}'
           if [[ "$requestedVersion" == version-* ]]; then
-            version=$(echo 'echo NimVersion; quit 0' | nim secret --hints:off)
+            version=$(echo 'echo NimVersion; quit 0' | "$nim" secret --hints:off)
             versionPrefix=${requestedVersion#version-}
             versionPrefix=${requestedVersion/-/.}
             if [[ $version == $requestedVersion* ]]; then
