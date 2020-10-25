@@ -1,0 +1,39 @@
+name: 'Setup Nim compiler and tools'
+description: 'Download and install the selected Nim nightly build'
+
+inputs:
+  version:
+    description: 'Which nightly-tracked branch should be fetched'
+    required: true
+    default: 'devel'
+  path:
+    description: 'The path which the compiler will be downloaded to'
+    required: false
+    default: 'nim'
+  add-to-path:
+    description: 'Whether the compiler should be added to PATH'
+    required: false
+    default: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: 'Download the Nim compiler'
+      shell: bash
+      run: ${{ github.action_path }}/setup.sh -o '${{ inputs.path }}' '${{ inputs.version }}'
+
+    - name: 'Enable annotations support'
+      shell: bash
+      run: echo '::add-matcher::${{ github.action_path }}/.github/nim.json'
+
+    - name: 'Add the Nim compiler to PATH'
+      if: inputs.add-to-path
+      shell: bash
+      run: |
+        path=${{ inputs.path }}
+        path=$(python -c "import os; import sys; print(os.path.realpath(sys.argv[1]))" "$path")
+        echo "$path" >> "$GITHUB_PATH"
+
+branding:
+  icon: 'download-cloud'
+  color: 'yellow'

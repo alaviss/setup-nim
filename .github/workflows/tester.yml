@@ -1,0 +1,70 @@
+on: [push, pull_request]
+
+name: 'Test Github Actions'
+
+jobs:
+  test-native:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['windows-latest', 'ubuntu-latest', 'macos-latest']
+        customDir: ['', 'install-nim-here', 'dir with spaces']
+        addPath: [true, false]
+
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout Actions
+        uses: actions/checkout@v2
+
+      - if: matrix.customDir == ''
+        name: Install Nim (default subdir)
+        uses: .
+        with:
+          add-to-path: ${{ matrix.addPath }}
+
+      - if: matrix.customDir != ''
+        name: Install Nim (custom subdir)
+        uses: .
+        with:
+          path: ${{ matrix.customDir }}
+
+      - if: matrix.addPath
+        name: Verify installation in PATH
+        shell: bash
+        run: nim -v
+
+      - if: ! matrix.addPath
+        name: Verify installation not in PATH
+        shell: bash
+        run: ! which nim
+
+      - name: Verify installation in correct folder
+        shell: bash
+        run:
+          directory=${{ matrix.customDir }}
+          [[ -z "$directory" ]] && directory=nim
+          "$directory/bin/nim" -v
+
+      - name: Check if the compiler works
+        shell: bash
+        run: |
+          cat << EOF > test.nim
+        import strutils
+        import sequtils
+        import tables
+        EOF
+
+        if ${{ matrix.addPath }}; then
+          nim c test.nim
+        else
+          directory=${{ matrix.customDir }}
+          [[ -z "$directory" ]] && directory=nim
+          "$directory/bin/nim" c test.nim
+        fi
+
+      - name: Check if nimble works
+        shell: bash
+        run: |
+          nimble develop -y karax nimterop choosenim
