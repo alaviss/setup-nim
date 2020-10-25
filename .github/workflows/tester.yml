@@ -63,14 +63,14 @@ jobs:
           import tables
           EOF
 
-          if ${{ matrix.addPath }}; then
-            nim c test.nim
-          else
+          nim=nim
+          if ! ${{ matrix.addPath }}; then
             directory='${{ matrix.customDir }}'
-            [[ -z "$directory" ]] && directory=nim
-            "$directory/bin/nim" c test.nim
+            nim="$directory/bin/nim"
           fi
 
+          # Disable warnings to not trigger annotations
+          "$nim" c --warning:off test.nim
       - if: matrix.addPath
         name: Check if nimble works
         shell: bash
