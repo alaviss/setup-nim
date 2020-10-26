@@ -23,5 +23,7 @@
 import asyncjs
 import ".." / utils
 
+export `~`
+
 wrapModule("@actions/exec"):
-  proc exec*(commandLine: cstring, args: varargs[cstring, cstring]): Future[int]
+  proc exec*(commandLine: cstring, args: varargs[cstring, `~`]): Future[int]

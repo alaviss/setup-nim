@@ -31,14 +31,11 @@ type
     Success = 0
     Failure
 
-  CommandProperties = JsAssoc[cstring, cstring]
-
 wrapModule("@actions/core"):
   proc exportVariable*(name: cstring, val: any)
   proc setSecret*(secret: cstring)
   proc addPath*(path: cstring)
-  proc getInput*(name: cstring): cstring
-  proc getInput*(name: cstring, options: InputOptions): cstring
+  proc getInput*(name: cstring, options = InputOptions{}): cstring
   proc setOutput*(name: cstring, val: any)
   proc setCommandEcho*(enabled: bool)
   proc setFailed*(message: cstring)
@@ -53,7 +50,7 @@ wrapModule("@actions/core"):
   proc getState*(name: cstring): cstring
 
 template group*(name: cstring, body: untyped): untyped =
-  let n = name
+  let n = ~name
   try:
     startGroup(n)
     body

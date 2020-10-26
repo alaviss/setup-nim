@@ -19,14 +19,9 @@ import asyncjs, jsffi
 import private/actions/[core, exec]
 import private/path
 
-var process {.nodecl, importc.}: JsObject
 let
   fs = require("fs")
   os = require("os")
-
-template getAppDir(): cstring =
-  var dir {.nodecl, importc: "__dirname"}: cstring
-  dir
 
 template addPath(path: cstring) =
   let p = path
@@ -37,12 +32,12 @@ proc main(): Future[void] {.async.} =
   try:
     let path = getInput("path")
     group "Download the compiler":
-      let exitCode = await exec("bash", "--", getAppDir() / "setup.sh", "-o", path, getInput("version", InputOptions(required: true)))
+      let exitCode = await exec("bash", "--", jsDirname / "setup.sh", "-o", path, getInput("version", InputOptions(required: true)))
       if exitCode != 0:
         error "Download failed"
         return
     info "Adding annotations"
-    addMatcher join(getAppDir(), ".github", "nim.json")
+    addMatcher join(jsDirname, ".github", "nim.json")
     if getInput("add-to-path") == "true":
       info "Adding compiler to PATH"
       let rpath = fs.realpathSync(path).to(cstring)

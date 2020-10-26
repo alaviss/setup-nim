@@ -6,17 +6,14 @@
 #  License, v. 2.0. If a copy of the MPL was not distributed with this
 #  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import jsffi, macros
+import jsffi
+import utils
 
-let path = require("path")
+export `~`
 
-macro join*(fragments: varargs[cstring, cstring]): cstring =
-  result = newStmtList()
-  let joinCall = newCall(newDotExpr(bindSym"path", ident"join"))
-  for f in fragments:
-    joinCall.add f
-  result.add newCall(bindSym"to", joinCall, newCall(bindSym"typeof", bindsym"cstring"))
+wrapModule("path"):
+  proc join*(paths: varargs[cstring, `~`]): cstring {.varargs.}
 
 func `/`*(a, b: cstring): cstring {.inline.} =
   {.noSideEffect.}:
-    join(a, b)
+    result = join(a, b)

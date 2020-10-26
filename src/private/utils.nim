@@ -6,7 +6,7 @@
 #  License, v. 2.0. If a copy of the MPL was not distributed with this
 #  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import macros, sugar, jsffi
+import macros, jsffi
 
 func addModuleDecl(n: NimNode, module: string): tuple[typ, inst: NimNode] =
   result.typ = genSym(nskType, "Module")
@@ -46,6 +46,11 @@ func addModuleDecl(n: NimNode, module: string): tuple[typ, inst: NimNode] =
 
   discard # Compiler bug
 
+func isVarargsProc(n: NimNode): bool =
+  doAssert n.kind in {nnkProcDef, nnkFuncDef}
+  n.pragma.findChild(it.kind in {nnkSym, nnkIdent} and
+                     eqIdent(it, "varargs")) != nil
+
 func newWrapperProc(typ, orig: NimNode): NimNode =
   doAssert orig.kind == nnkProcDef
   var params: seq[NimNode]
@@ -62,6 +67,26 @@ func newWrapperProc(typ, orig: NimNode): NimNode =
     for param in orig.params[1..^1]:
       params.add copyNimTree param
 
+  template errorVarargsExpected(info: NimNode) =
+    error """
+Varargs method must contain a parameter at the end of type `varargs`.
+If the varargs can accept any type, use `varargs[JsObject, jsffi.toJs]`
+""", info
+
+  if orig.isVarargsProc():
+    if orig.params.len > 1:
+      let
+        lastDef = params[^1]
+        lastDefType = lastDef[^2]
+      if lastDefType.kind != nnkBracketExpr or not lastDefType[0].eqIdent("varargs"):
+        errorVarargsExpected(lastDefType)
+      elif lastDef.len > 3:
+        lastDef.del(lastDef.len - 3)
+      else:
+        params.del params.len - 1
+    else:
+      errorVarargsExpected(orig)
+
   result = newProc(genSym(nskProc, orig.name.strVal & "_wrapper"), params,
                    pragmas = copyNimTree(orig.pragma))
   result.addPragma newTree(
@@ -70,26 +95,52 @@ func newWrapperProc(typ, orig: NimNode): NimNode =
     newLit orig.name.strVal
   )
 
-func newTemplate(n: NimNode): NimNode =
-  doAssert n.kind in {nnkProcDef, nnkMethodDef, nnkFuncDef}
-  result = newNimNode(nnkTemplateDef)
-  for i in n:
-    result.add copyNimTree i
+func wrapSym(sym: NimNode): NimNode =
+  ## Wrap a symbol so that it can be retrieved as a NimNode
+  doAssert sym.kind == nnkSym
+  let wrapper = genSym(nskTemplate)
+  result = newStmtList(
+    newProc(wrapper, [bindSym"untyped"], newStmtList(sym), nnkTemplateDef),
+    newCall(bindSym"getAst", newCall(wrapper))
+  )
+
+func newInlineWrapper(proto, module, wrapper: NimNode): NimNode =
+  doAssert proto.kind in {nnkProcDef, nnkMethodDef, nnkFuncDef}
+  doAssert module.kind == nnkSym
+  doAssert wrapper.kind == nnkSym
+  let isVarargs = proto.isVarargsProc()
+  result = newTree(nnkMacroDef)
+
+  for i in proto:
+    result.add copyNimTree(i)
+
   result.pragma = newEmptyNode()
-  if n.pragma.findChild(it.kind == nnkIdent and eqIdent(it, "varargs")) != nil:
-    error "varargs wrapping is not supported!"
-    when false:
-      result.vaSym = genSym(nskParam, "va")
-      result.templ.params.add newTree(
-        nnkIdentDefs,
-        result.vaSym,
-        newTree(
-          nnkBracketExpr,
-          bindSym"varargs",
-          bindSym"untyped"
-        ),
-        newEmptyNode()
-      )
+  result.body = newStmtList(
+    newAssignment(
+      ident"result",
+      newCall(bindSym"newStmtList")
+    )
+  )
+
+  let
+    genWrapperCall = newCall(bindSym"newCall", wrapper.wrapSym, module.wrapSym)
+    storeGenWrapperCall = newLetStmt(genSym(), genWrapperCall)
+  result.body.add storeGenWrapperCall
+  result.body.add newCall(bindSym"add", ident"result", storeGenWrapperCall[0][0])
+  if result.params.len > 1:
+    for paramDefIdx in 1 ..< result.params.len:
+      for paramIdx in 0 ..< result.params[paramDefIdx].len - 2:
+        if paramDefIdx < result.params.len - 1:
+          genWrapperCall.add result.params[paramDefIdx][paramIdx]
+
+    if isVarargs:
+      template addVarargs(arg, items, call): untyped =
+        for i in arg.items:
+          call.add i
+
+      result.body.add getAst addVarargs(result.params[^1][^3], bindSym"items", storeGenWrapperCall[0][0])
+    else:
+      genWrapperCall.add result.params[^1][^3]
 
 macro wrapModule*(name: static[string], procs: untyped): untyped =
   expectKind procs, nnkStmtList
@@ -104,17 +155,13 @@ macro wrapModule*(name: static[string], procs: untyped): untyped =
         wrapperSym = wrapper[0]
 
       result.add wrapper
-
-      let wrapperCall = newCall(wrapperSym, module)
-      if p.params.len > 1:
-        let params = collect(newSeq):
-          for param in p.params[1..^1]:
-            for def in param[0..^3]:
-              def
-        wrapperCall.add params
-
-      let wrapperTemplate = newTemplate(p)
-      wrapperTemplate.body = newStmtList(wrapperCall)
-      result.add wrapperTemplate
+      result.add newInlineWrapper(p, module, wrapperSym)
     else:
       error "Only procs can be wrapped at the moment! Got " & $p.kind, p
+
+template `~`*(s: cstring): cstring =
+  ## A no-op operator
+  s
+template `~`*(s: string): cstring =
+  ## Convienient operator to convert `string` -> `cstring`
+  s.cstring

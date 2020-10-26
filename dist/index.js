@@ -25,6 +25,10 @@ var NTI1194723 = {size: 0,kind: 22,base: null,node: null,finalizer: null};
 var NTI1194617 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
 var NTI1194619 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
 var NTI1194657 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
+var NTI1188064 = {size: 0,kind: 1,base: null,node: null,finalizer: null};
+var NTI2816015 = {size: 0, kind: 18, base: null, node: null, finalizer: null};
+var NNI2816015 = {kind: 1, offset: "required", len: 0, typ: NTI1188064, name: "required", sons: null};
+NTI2816015.node = NNI2816015;
 var NNI1194657 = {kind: 2, len: 0, offset: 0, typ: null, name: null, sons: []};
 NTI1194657.node = NNI1194657;
 var NNI1194619 = {kind: 2, len: 0, offset: 0, typ: null, name: null, sons: []};
@@ -42,6 +46,101 @@ NTI1194408.node = NNI1194408;
 NTI1194617.base = NTI1194408;
 NTI1194619.base = NTI1194617;
 NTI1194657.base = NTI1194619;
+function setConstr() {
+        var result = {};
+    for (var i = 0; i < arguments.length; ++i) {
+      var x = arguments[i];
+      if (typeof(x) == "object") {
+        for (var j = x[0]; j <= x[1]; ++j) {
+          result[j] = true;
+        }
+      } else {
+        result[x] = true;
+      }
+    }
+    return result;
+  
+
+  
+}
+var ConstSet1 = setConstr(17, 16, 4, 18, 27, 19, 23, 22, 21);
+function nimCopy(dest_1470023, src_1470024, ti_1470025) {
+  var result_1475219 = null;
+
+    switch (ti_1470025.kind) {
+    case 21:
+    case 22:
+    case 23:
+    case 5:
+      if (!(isFatPointer_1465401(ti_1470025))) {
+      result_1475219 = src_1470024;
+      }
+      else {
+        result_1475219 = [src_1470024[0], src_1470024[1]];
+      }
+      
+      break;
+    case 19:
+            if (dest_1470023 === null || dest_1470023 === undefined) {
+        dest_1470023 = {};
+      }
+      else {
+        for (var key in dest_1470023) { delete dest_1470023[key]; }
+      }
+      for (var key in src_1470024) { dest_1470023[key] = src_1470024[key]; }
+      result_1475219 = dest_1470023;
+    
+      break;
+    case 18:
+    case 17:
+      if (!((ti_1470025.base == null))) {
+      result_1475219 = nimCopy(dest_1470023, src_1470024, ti_1470025.base);
+      }
+      else {
+      if ((ti_1470025.kind == 17)) {
+      result_1475219 = (dest_1470023 === null || dest_1470023 === undefined) ? {m_type: ti_1470025} : dest_1470023;
+      }
+      else {
+        result_1475219 = (dest_1470023 === null || dest_1470023 === undefined) ? {} : dest_1470023;
+      }
+      }
+      nimCopyAux(result_1475219, src_1470024, ti_1470025.node);
+      break;
+    case 24:
+    case 4:
+    case 27:
+    case 16:
+            if (src_1470024 === null) {
+        result_1475219 = null;
+      }
+      else {
+        if (dest_1470023 === null || dest_1470023 === undefined) {
+          dest_1470023 = new Array(src_1470024.length);
+        }
+        else {
+          dest_1470023.length = src_1470024.length;
+        }
+        result_1475219 = dest_1470023;
+        for (var i = 0; i < src_1470024.length; ++i) {
+          result_1475219[i] = nimCopy(result_1475219[i], src_1470024[i], ti_1470025.base);
+        }
+      }
+    
+      break;
+    case 28:
+            if (src_1470024 !== null) {
+        result_1475219 = src_1470024.slice(0);
+      }
+    
+      break;
+    default: 
+      result_1475219 = src_1470024;
+      break;
+    }
+
+  return result_1475219;
+
+}
 function makeNimstrLit(c_1455062) {
       var ln = c_1455062.length;
   var result = new Array(ln);
@@ -160,28 +259,70 @@ if (!Math.trunc) {
 }
 
 var objectID_2085031 = [0];
-var module_2931100 = (__webpack_require__(186));
-var module_2951031 = (__webpack_require__(514));
-var path_2956028 = __webpack_require__(622);
-var fs_2986015 = __webpack_require__(747);
-var os_2986016 = __webpack_require__(87);
-function newSeq_1455128(len_1455131) {
-  var result_1455133 = [];
+var module_2816039 = (__webpack_require__(186));
+var module_2846044 = (__webpack_require__(514));
+var module_2851057 = (__webpack_require__(622));
+var fs_2881014 = __webpack_require__(747);
+var os_2881015 = __webpack_require__(87);
+function isFatPointer_1465401(ti_1465403) {
+  var result_1465404 = false;
 
-    result_1455133 = new Array(len_1455131); for (var i=0;i<len_1455131;++i) {result_1455133[i]=null;}
-  return result_1455133;
+  BeforeRet: do {
+    result_1465404 = !((ConstSet1[ti_1465403.base.kind] != undefined));
+    break BeforeRet;
+  } while (false);
 
-}
-function HEX2F_2956099(a_2956101, b_2956102) {
-  var result_2956103 = null;
-
-    result_2956103 = (path_2956028.join((a_2956101), (b_2956102)));
-
-  return result_2956103;
+  return result_1465404;
 
 }
-function addMatcher_2935151(file_2935153) {
-    console.log((("::add-matcher::" + file_2935153)));
+function nimCopyAux(dest_1470028, src_1470029, n_1470031) {
+    switch (n_1470031.kind) {
+    case 0:
+      break;
+    case 1:
+            dest_1470028[n_1470031.offset] = nimCopy(dest_1470028[n_1470031.offset], src_1470029[n_1470031.offset], n_1470031.typ);
+    
+      break;
+    case 2:
+          for (var i = 0; i < n_1470031.sons.length; i++) {
+      nimCopyAux(dest_1470028, src_1470029, n_1470031.sons[i]);
+    }
+    
+      break;
+    case 3:
+            dest_1470028[n_1470031.offset] = nimCopy(dest_1470028[n_1470031.offset], src_1470029[n_1470031.offset], n_1470031.typ);
+      for (var i = 0; i < n_1470031.sons.length; ++i) {
+        nimCopyAux(dest_1470028, src_1470029, n_1470031.sons[i][1]);
+      }
+    
+      break;
+    }
+
+  
+}
+function innerHEX60gensym5_2830001() {
+  var result_2830003 = ({required: false});
+
+  BeforeRet: do {
+    var a_2830004 = ({required: false});
+    a_2830004 = {};
+    nimCopy(result_2830003, a_2830004, NTI2816015);
+    break BeforeRet;
+  } while (false);
+
+  return result_2830003;
+
+}
+function HEX2F_2855073(a_2855075, b_2855076) {
+  var result_2855077 = null;
+
+    result_2855077 = module_2851057.join(a_2855075, b_2855076);
+
+  return result_2855077;
+
+}
+function addMatcher_2830452(file_2830454) {
+    console.log((("::add-matcher::" + file_2830454)));
 
   
 }
@@ -195,6 +336,13 @@ function add_1357042(x_1357045, x_1357045_Idx, y_1357046) {
     
 
   
+}
+function newSeq_1455128(len_1455131) {
+  var result_1455133 = [];
+
+    result_1455133 = new Array(len_1455131); for (var i=0;i<len_1455131;++i) {result_1455133[i]=null;}
+  return result_1455133;
+
 }
 function unhandledException(e_1415059) {
     var buf_1415060 = [[]];
@@ -226,43 +374,43 @@ function isNimException_1375704() {
 
   
 }
-async function main_2990001() {
+async function main_2885001() {
     var Tmp2;
     var Tmp4;
 
-  var result_2990007 = null;
+  var result_2885007 = null;
 
   BeforeRet: do {
 ++excHandler;
     Tmp2 = framePtr;
     try {
-    var path_2995001 = module_2931100.getInput("path");
-    var nHEX60gensym5_3000001 = makeNimstrLit("Download the compiler");
+    var path_2890001 = module_2816039.getInput("path", innerHEX60gensym5_2830001());
+    var nHEX60gensym6_2900001 = "Download the compiler";
     Tmp4 = framePtr;
     try {
-    module_2931100.startGroup(toJSStr(nHEX60gensym5_3000001));
-    var exitCode_3020012 = (await module_2951031.exec("bash", ["--", HEX2F_2956099(__dirname, "setup.sh"), "-o", path_2995001, module_2931100.getInput("version", {required: true})]));
-    if (!((exitCode_3020012 == 0))) {
-    module_2931100.error("Download failed");
-    result_2990007 = undefined;
+    module_2816039.startGroup(nHEX60gensym6_2900001);
+    var exitCode_2965012 = (await module_2846044.exec("bash", ["--", HEX2F_2855073(__dirname, "setup.sh"), "-o", path_2890001, module_2816039.getInput("version", {required: true})]));
+    if (!((exitCode_2965012 == 0))) {
+    module_2816039.error("Download failed");
+    result_2885007 = undefined;
     break BeforeRet;
     }
     
     } finally {
     framePtr = Tmp4;
-    module_2931100.endGroup(toJSStr(nHEX60gensym5_3000001));
+    module_2816039.endGroup(nHEX60gensym6_2900001);
     }
-    module_2931100.info("Adding annotations");
-    addMatcher_2935151((__webpack_require__.ab + "nim.json"));
-    if ((module_2931100.getInput("add-to-path") == "true")) {
-    module_2931100.info("Adding compiler to PATH");
-    var rpath_3110011 = (fs_2986015.realpathSync((path_2995001)));
-    var pHEX60gensym27_3115001 = HEX2F_2956099(rpath_3110011, "bin");
-    module_2931100.info((("Adding '" + pHEX60gensym27_3115001) + "' to PATH"));
-    module_2931100.addPath(HEX2F_2956099(rpath_3110011, "bin"));
-    var pHEX60gensym38_3175001 = (path_2956028.join(((os_2986016.homedir())), (".nimble"), ("bin")));
-    module_2931100.info((("Adding '" + pHEX60gensym38_3175001) + "' to PATH"));
-    module_2931100.addPath((path_2956028.join(((os_2986016.homedir())), (".nimble"), ("bin"))));
+    module_2816039.info("Adding annotations");
+    addMatcher_2830452(__webpack_require__.ab + "nim.json");
+    if ((module_2816039.getInput("add-to-path", innerHEX60gensym5_2830001()) == "true")) {
+    module_2816039.info("Adding compiler to PATH");
+    var rpath_3045011 = (fs_2881014.realpathSync((path_2890001)));
+    var pHEX60gensym46_3050001 = HEX2F_2855073(rpath_3045011, "bin");
+    module_2816039.info((("Adding '" + pHEX60gensym46_3050001) + "' to PATH"));
+    module_2816039.addPath(HEX2F_2855073(rpath_3045011, "bin"));
+    var pHEX60gensym60_3105001 = module_2851057.join((os_2881015.homedir()), ".nimble", "bin");
+    module_2816039.info((("Adding '" + pHEX60gensym60_3105001) + "' to PATH"));
+    module_2816039.addPath(module_2851057.join((os_2881015.homedir()), ".nimble", "bin"));
     }
     
 --excHandler;
@@ -271,20 +419,20 @@ async function main_2990001() {
  lastJSError = EXC;
  --excHandler;
     framePtr = Tmp2;
-    module_2931100.setFailed("Failed!");
+    module_2816039.setFailed("Failed!");
     reraiseException();
     lastJSError = prevJSError;
     } finally {
     framePtr = Tmp2;
     }
-    result_2990007 = undefined;
+    result_2885007 = undefined;
     break BeforeRet;
   } while (false);
 
-  return result_2990007;
+  return result_2885007;
 
 }
-main_2990001();
+main_2885001();
 
 
 /***/ }),
