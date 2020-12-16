@@ -9,20 +9,64 @@ jobs:
       matrix:
         version: ['version-1-0', 'version-1-4', 'devel']
         os: ['windows-latest', 'ubuntu-latest', 'macos-latest']
+        arch: ['', 'amd64', 'i386']
         customDir: ['', 'install-nim-here', 'dir with spaces']
         addPath: [true, false]
+        exclude:
+          - os: macos-latest
+            arch: i386
+        include:
+          - os: windows-latest
+            arch: ''
+            mingw: x64
+          - os: windows-latest
+            arch: amd64
+            mingw: x64
+          - os: windows-latest
+            arch: i386
+            mingw: x32
+          - os: ubuntu-latest
+            shell: bash
+          - os: macos-latest
+            shell: bash
 
-    name: '${{ matrix.os }}(path: ${{ matrix.customDir }}, add-to-path: ${{ matrix.addPath }}, version: ${{ matrix.version }})'
+    name: '${{ matrix.os }}(arch: ${{ matrix.arch }}, path: ${{ matrix.customDir }}, add-to-path: ${{ matrix.addPath }}, version: ${{ matrix.version }})'
     runs-on: ${{ matrix.os }}
+
+    defaults:
+      run:
+        shell: bash
 
     steps:
       - name: Checkout Actions
         uses: actions/checkout@v2
 
+      - if: matrix.arch == 'i386' && runner.os == 'Linux'
+        name: Setup 32bit compiler (Linux)
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-fast update -qq
+          sudo DEBIAN_FRONTEND='noninteractive' apt-fast install \
+            --no-install-recommends -yq gcc-multilib g++-multilib
+          mkdir -p ~/.config/nim
+          nimcfg=$HOME/.config/nim/nim.cfg
+
+          cat << EOF > ~/.config/nim/nim.cfg
+          passC = "-m32"
+          passL = "-m32"
+          EOF
+
+      - if: runner.os == 'Windows'
+        name: Setup MinGW (Windows)
+        uses: egor-tensin/setup-mingw@v1
+        with:
+          platform: ${{ matrix.mingw }}
+
       - if: matrix.customDir == ''
         name: Install Nim (default subdir)
         uses: ./
         with:
+          architecture: ${{ matrix.arch }}
           add-to-path: ${{ matrix.addPath }}
           version: ${{ matrix.version }}
 
@@ -30,18 +74,17 @@ jobs:
         name: Install Nim (custom subdir)
         uses: ./
         with:
+          architecture: ${{ matrix.arch }}
           path: ${{ matrix.customDir }}
           add-to-path: ${{ matrix.addPath }}
           version: ${{ matrix.version }}
 
       - if: matrix.addPath
         name: Verify installation in PATH
-        shell: bash
         run: nim -v
 
       - if: '! matrix.addPath'
         name: Verify installation not in PATH
-        shell: bash
         run: |
           if ! which nim >/dev/null 2>&1; then
             echo "Test passed!"
@@ -51,7 +94,6 @@ jobs:
           fi
 
       - name: Verify installation version and whether it is in the correct folder
-        shell: bash
         run: |
           directory='${{ matrix.customDir }}'
           [[ -z "$directory" ]] && directory=nim
@@ -74,7 +116,6 @@ jobs:
           fi
 
       - name: Check if the compiler works
-        shell: bash
         run: |
           cat << EOF > test.nim
           import strutils
@@ -106,7 +147,6 @@ jobs:
       # containing whitespaces.
       - if: matrix.addPath && ! contains(matrix.customDir, ' ')
         name: Check if nimble works
-        shell: bash
         run: |
           nimble install -y nimterop
           if ! command -v toast >/dev/null 2>&1; then
