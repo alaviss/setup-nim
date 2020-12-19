@@ -3,7 +3,7 @@ description: 'Download and install the selected Nim nightly build'
 
 inputs:
   architecture:
-    description: 'What architecture of the compiler should be fetched'
+    description: 'What architecture of the compiler should be fetched (defaults to native)'
     required: false
   version:
     description: 'Which nightly-tracked branch should be fetched'
