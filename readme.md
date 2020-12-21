@@ -49,6 +49,27 @@ jobs:
       - run: nimble test
 ```
 
+Testing 32bit Windows:
+
+```yaml
+jobs:
+  test:
+    name: Nim 32bit on Windows
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: egor-tensin/setup-mingw@v1
+        with:
+          platform: x86
+      - uses: alaviss/setup-nim@master
+        with:
+          path: 'nim'
+          version: devel
+          architecture: i386
+      - run: nimble test
+```
+
 # License
 
 Unless stated otherwise, scripts and documentations within this project are

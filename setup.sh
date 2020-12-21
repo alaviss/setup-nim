@@ -24,11 +24,15 @@ _download_url=$_releases_url/download
 
 print-help() {
   cat <<EOF
-Usage: $0 [option] version-branch
+Usage: $0 [option] version-branch [arch]
 
 Downloads and install the latest Nim nightly for branch 'version-branch'.
 The compiler can then be found in the 'bin' folder relative to the output
 directory.
+
+Optionally, the 'arch' parameter can be provided to set what architecture
+of the compiler should be downloaded instead of the native one. The architecture
+should be one of Nim supported --cpu.
 
 This script is tailored for CI use, as such it's very barebones and make
 assumptions about the system such as having a working C compiler.
@@ -38,39 +42,6 @@ Options:
                extracted to this directory. Defaults to \$PWD/nim.
     -h         Print this help message.
 EOF
-}
-
-get-archive-name() {
-  local ext=.tar.xz
-  local os; os=$(uname)
-  os=$(tr '[:upper:]' '[:lower:]' <<< "$os")
-  case "$os" in
-    'darwin')
-      os=macosx
-      ;;
-    'windows_nt'|mingw*)
-      os=windows
-      ext=.zip
-      ;;
-  esac
-
-  local arch; arch=$(uname -m)
-  case "$arch" in
-    aarch64)
-      arch=arm64
-      ;;
-    armv7l)
-      arch=arm
-      ;;
-    i*86)
-      arch=x32
-      ;;
-    x86_64)
-      arch=x64
-      ;;
-  esac
-
-  echo "${os}_$arch$ext"
 }
 
 has-release() {
@@ -87,7 +58,55 @@ ok() {
 }
 
 err() {
-  echo $'\e[1m\e[31mError:\e[0m' "$@"
+  if [[ -z ${GITHUB_ACTION+z} ]]; then
+    echo "::error::" "$@"
+  else
+    echo $'\e[1m\e[31mError:\e[0m' "$@" >&2
+  fi
+}
+
+warn() {
+  if [[ -z ${GITHUB_ACTION+z} ]]; then
+    echo "::warning::" "$@"
+  else
+    echo $'\e[1m\e[33mWarning:\e[0m' "$@" >&2
+  fi
+}
+
+get-archive-name() {
+  local ext=.tar.xz
+  local os; os=$(uname)
+  os=$(tr '[:upper:]' '[:lower:]' <<< "$os")
+  case "$os" in
+    'darwin')
+      os=macosx
+      ;;
+    'windows_nt'|mingw*)
+      os=windows
+      ext=.zip
+      ;;
+  esac
+
+  local arch; arch=${1?}
+  case "$arch" in
+    arm64|aarch64)
+      arch=arm64
+      ;;
+    arm|armv7l)
+      arch=arm
+      ;;
+    x32|i*86)
+      arch=x32
+      ;;
+    amd64|x64|x86_64)
+      arch=x64
+      ;;
+    *)
+      warn "Unknown architecture $arch"
+      ;;
+  esac
+
+  echo "${os}_$arch$ext"
 }
 
 out=$PWD/nim
@@ -115,13 +134,16 @@ if [[ -z "$branch" ]]; then
   print-help
   exit 1
 fi
+arch=
+[[ $# -gt 1 ]] && arch=$2
+: "${arch:=$(uname -m)}"
 
 mkdir -p "$out"
 cd "$out"
 
 tag=latest-$branch
 if has-release "$tag"; then
-  archive=$(get-archive-name)
+  archive=$(get-archive-name "$arch")
   msg "Downloading prebuilt archive '$archive' for branch '$branch'"
   if ! curl -f -LO "$_download_url/$tag/$archive"; then
     err "Archive '$archive' could not be found and/or downloaded. Maybe your OS/architecture does not have any prebuilt available?"

@@ -2,6 +2,9 @@ name: 'Setup Nim compiler and tools'
 description: 'Download and install the selected Nim nightly build'
 
 inputs:
+  architecture:
+    description: 'What architecture of the compiler should be fetched (defaults to native)'
+    required: false
   version:
     description: 'Which nightly-tracked branch should be fetched'
     required: true
@@ -21,7 +24,7 @@ runs:
     - name: 'Download the Nim compiler'
       shell: bash
       run: |
-        '${{ github.action_path }}/setup.sh' -o '${{ inputs.path }}' '${{ inputs.version }}'
+        '${{ github.action_path }}/setup.sh' -o '${{ inputs.path }}' '${{ inputs.version }}' '${{ inputs.architecture }}'
 
     - name: 'Enable annotations support'
       shell: bash
