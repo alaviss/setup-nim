@@ -35,12 +35,18 @@ runs:
           echo "Directory '$1' has been added to PATH."
         }
 
+        real-path() {
+          if [[ '${{ runner.os }}' == 'Windows' ]]; then
+            cygpath -aw "$1"
+          else
+            python -c "import os; import sys; print(os.path.realpath(sys.argv[1]))" "$1"
+          fi
+        }
+
         if ${{ inputs.add-to-path }}; then
           path='${{ inputs.path }}'
-          path=$(python -c "import os; import sys; print(os.path.realpath(sys.argv[1]))" "$path")
-          path=$path/bin
-          add-path "$path"
-          add-path "$HOME/.nimble/bin"
+          add-path "$(real-path "$path/bin")"
+          add-path "$(real-path "$HOME/.nimble/bin")"
         else
           echo "This step was skipped per user request."
         fi

@@ -112,3 +112,11 @@ jobs:
           if ! command -v toast >/dev/null 2>&1; then
             echo "Error: could not find toast"
           fi
+
+      - if: runner.os == 'Windows' && matrix.addPath && ! contains(matrix.customDir, ' ')
+        name: Check if PATH is correct for native Windows software
+        shell: powershell
+        run: |
+          Get-Command "toast.cmd" -ErrorAction Stop | out-null
+          Get-Command "nim.exe" -ErrorAction Stop | out-null
+          Write-Host "Test passed"
