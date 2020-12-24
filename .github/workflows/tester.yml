@@ -25,10 +25,6 @@ jobs:
           - os: windows-latest
             arch: i386
             mingw: x32
-          - os: ubuntu-latest
-            shell: bash
-          - os: macos-latest
-            shell: bash
 
     name: '${{ matrix.os }}(arch: ${{ matrix.arch }}, path: ${{ matrix.customDir }}, add-to-path: ${{ matrix.addPath }}, version: ${{ matrix.version }})'
     runs-on: ${{ matrix.os }}
