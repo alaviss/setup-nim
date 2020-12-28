@@ -104,8 +104,8 @@ jobs:
           if [[ "$requestedVersion" == version-* ]]; then
             version=$(echo 'echo NimVersion; quit 0' | "$nim" secret --hints:off)
             versionPrefix=${requestedVersion#version-}
-            versionPrefix=${requestedVersion/-/.}
-            if [[ $version == $requestedVersion* ]]; then
+            versionPrefix=${versionPrefix/-/.}
+            if [[ $version == $versionPrefix* ]]; then
               echo "The correct version was fetched"
             else
               echo "Error: Expected version prefix '$versionPrefix', but version '$version' was installed"
