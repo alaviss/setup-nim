@@ -23,15 +23,18 @@ runs:
   steps:
     - name: 'Download the Nim compiler'
       shell: bash
+      working-directory: ${{ github.workspace }}
       run: |
         '${{ github.action_path }}/setup.sh' -o '${{ inputs.path }}' '${{ inputs.version }}' '${{ inputs.architecture }}'
 
     - name: 'Enable annotations support'
       shell: bash
+      working-directory: ${{ github.workspace }}
       run: echo '::add-matcher::${{ github.action_path }}/.github/nim.json'
 
     - name: 'Add the Nim compiler to PATH'
       shell: bash
+      working-directory: ${{ github.workspace }}
       run: |
         add-path() {
           echo "$1" >> "$GITHUB_PATH"
